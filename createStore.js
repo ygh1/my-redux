@@ -1,6 +1,12 @@
-export default function createStore (reducer, preloadedState) {
+export default function createStore (reducer, preloadedState, enhancer) {
+  // 对reducer 判断
   if (typeof reducer !== 'function') {
     throw new Error('reducer must be a function.')
+  }
+
+  if (typeof enhancer !== 'undefined') {
+    if (typeof enhancer !== 'function') throw new Error('enhancer must be a function.')
+    return enhancer(createStore)(reducer, preloadedState)
   }
 
   // 保存store

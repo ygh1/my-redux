@@ -13,6 +13,25 @@
   <script type="module">
     import { createStore } from './redux.js'
 
+    function enhancer (createStore) {
+      return (reducer, preloadedState) => {
+        const store = createStore(reducer, preloadedState)
+        let dispatch = store.dispatch
+
+        function _dispatch (action) {
+          if (typeof action === 'function') {
+            return action(dispatch)
+          }
+          dispatch(action)
+        }
+
+        return {
+          ...store,
+          dispatch: _dispatch
+        }
+      }
+    }
+
     function reducer (state, action) {
       switch(action.type) {
         case 'increment': return state + 1
@@ -20,13 +39,18 @@
         default: return state
       }
     }
-    const store = createStore(reducer, 0)
+    const store = createStore(reducer, 0, enhancer)
+    console.log(store)
 
     store.subscribe(() => {
       document.getElementById('box').innerHTML = store.getState()
     })
     document.getElementById('add').onclick =() => {
-      store.dispatch({type: 'increment'})
+      store.dispatch(dispatch => {
+        setTimeout(() => {
+          dispatch({type: 'increment'})
+        }, 1000)
+      })
     }
 
     document.getElementById('reduce').onclick =() => {
