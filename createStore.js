@@ -15,6 +15,9 @@ export default function createStore (reducer, preloadedState) {
   }
 
   function dispatch (action) {
+    // 判断 action 是否是对象
+    if (!isPlainObject(action)) throw new Error('action must be a plain object.')
+    if (action.type === 'undefined') throw new Error('action must be have type attribete.')
     currentState = reducer(currentState, action)
 
     // 循环数组，调用订阅者
@@ -32,4 +35,16 @@ export default function createStore (reducer, preloadedState) {
     dispatch,
     subscribe
   }
+}
+
+// 判断 obj 是否是对象
+function isPlainObject (obj) {
+  if (typeof obj !== 'object' || obj === null) return false
+  // 原型对象对比
+  let proto = obj
+  while (Object.getPrototypeOf(proto) != null) {
+    proto = Object.getPrototypeOf(proto)
+    console.log(proto)
+  }
+  return Object.getPrototypeOf(obj) === proto
 }
