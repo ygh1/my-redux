@@ -11,7 +11,9 @@
   <span id="box">0</span>
   <button id="reduce">-1</button>
   <script type="module">
-    import { createStore } from './redux.js'
+    import { createStore, appleMiddleware } from './redux.js'
+    import logger from './middleware/logger.js'
+    import thunk from './middleware/thunk.js'
 
     function enhancer (createStore) {
       return (reducer, preloadedState) => {
@@ -39,18 +41,14 @@
         default: return state
       }
     }
-    const store = createStore(reducer, 0, enhancer)
+    const store = createStore(reducer, 0, appleMiddleware(logger, thunk))
     console.log(store)
 
     store.subscribe(() => {
       document.getElementById('box').innerHTML = store.getState()
     })
     document.getElementById('add').onclick =() => {
-      store.dispatch(dispatch => {
-        setTimeout(() => {
-          dispatch({type: 'increment'})
-        }, 1000)
-      })
+      store.dispatch({type: 'increment'})
     }
 
     document.getElementById('reduce').onclick =() => {
