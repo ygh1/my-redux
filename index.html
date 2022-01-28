@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <button id="add">+1</button>
+  <span id="box">0</span>
+  <button id="reduce">-1</button>
+  <script type="module">
+    import { createStore } from './redux.js'
+
+    function reducer (state, action) {
+      switch(action.type) {
+        case 'increment': return state + 1
+        case 'decrement': return state - 1
+        default: return state
+      }
+    }
+    const store = createStore(reducer, 0)
+
+    store.subscribe(() => {
+      document.getElementById('box').innerHTML = store.getState()
+    })
+    document.getElementById('add').onclick =() => {
+      store.dispatch({type: 'increment'})
+    }
+
+    document.getElementById('reduce').onclick =() => {
+      store.dispatch({type: 'decrement'})
+    }
+  </script>
+</body>
+</html>
